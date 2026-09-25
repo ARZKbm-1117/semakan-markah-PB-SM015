@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Semakan Markah PB</title>
+    <!-- Font Awesome untuk ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font (Poppins) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-blue: #0d47a1;
+            --secondary-blue: #1976d2;
+            --light-blue: #e3f2fd;
+            --accent-red: #d32f2f;
+            --light-red: #ffebee;
+            --pure-white: #ffffff;
+            --gray-bg: #f8fafc;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 25px -5px rgba(13, 71, 161, 0.1), 0 8px 10px -6px rgba(13, 71, 161, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--gray-bg);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: radial-gradient(var(--light-blue) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        /* Header Navigation */
+        header {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            color: var(--pure-white);
+            padding: 1.25rem 2rem;
+            border-bottom: 4px solid var(--accent-red);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .header-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-area i {
+            font-size: 2rem;
+            color: var(--pure-white);
+        }
+
+        .logo-area h1 {
+            font-size: 1.35rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .logo-area p {
+            font-size: 0.8rem;
+            opacity: 0.85;
+        }
+
+        /* Container Utama */
+        .main-container {
+            max-width: 1000px;
+            margin: 2.5rem auto;
+            padding: 0 1.5rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        /* Carian Box */
+        .search-card {
+            background: var(--pure-white);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .search-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background-color: var(--accent-red);
+        }
+
+        .search-card h2 {
+            font-size: 1.25rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .input-group {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.85rem 1rem 0.85rem 2.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            border-color: var(--secondary-blue);
+            box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.15);
+        }
+
+        .btn-search {
+            background-color: var(--primary-blue);
+            color: var(--pure-white);
+            border: none;
+            padding: 0.85rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-search:hover {
+            background-color: #0a3680;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(13, 71, 161, 0.25);
+        }
+
+        /* Mesej Ralat */
+        .error-message {
+            display: none;
+            background-color: var(--light-red);
+            color: var(--accent-red);
+            padding: 1rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--accent-red);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Kad Keputusan */
+        .result-container {
+            display: none;
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Profil Pelajar Card */
+        .profile-card {
+            background: var(--pure-white);
+            border-radius: 16px;
+            padding: 1.75rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            background: linear-gradient(to right, var(--pure-white), #f0f7ff);
+            border-left: 6px solid var(--primary-blue);
+        }
+
+        .profile-item label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            font-weight: 600;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .profile-item span {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+
+        /* Ringkasan Markah Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--pure-white);
+            padding: 1.5rem;
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            position: relative;
+        }
+
+        .stat-card.pb { border-top: 4px solid var(--secondary-blue); }
+        .stat-card.total { border-top: 4px solid var(--accent-red); }
+
+        .stat-card h3 {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .stat-card .value {
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+
+        .stat-card.pb .value { color: var(--secondary-blue); }
+        .stat-card.total .value { color: var(--accent-red); }
+
+        /* Jadual Detail Markah */
+        .table-card {
+            background: var(--pure-white);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .table-header {
+            background-color: var(--primary-blue);
+            color: var(--pure-white);
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.92rem;
+        }
+
+        th {
+            background-color: var(--light-blue);
+            color: var(--primary-blue);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .badge-percent {
+            background-color: var(--light-blue);
+            color: var(--primary-blue);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        /* Pautan Laporan */
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .report-link-card {
+            background: var(--pure-white);
+            border: 1px solid var(--border-color);
+            padding: 1.25rem;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .report-link-card:hover {
+            border-color: var(--accent-red);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(211, 47, 47, 0.12);
+        }
+
+        .report-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .report-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background-color: var(--light-red);
+            color: var(--accent-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .report-details h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .report-details p {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .report-action {
+            color: var(--primary-blue);
+            font-size: 1.1rem;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: auto;
+            background-color: var(--pure-white);
+        }
+
+        /* Media Queries untuk Akses Mudah Alih */
+        @media (max-width: 600px) {
+            .header-container {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+
+            .search-form {
+                flex-direction: column;
+            }
+
+            .btn-search {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header System -->
+    <header>
+        <div class="header-container">
+            <div class="logo-area">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <div>
+                    <h1>Sistem Semakan Markah PB</h1>
+                    <p>Penilaian Berterusan Pelajar</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Content Utama -->
+    <main class="main-container">
+        
+        <!-- Kad Carian No. Matrik -->
+        <div class="search-card">
+            <h2><i class="fa-solid fa-id-card"></i> Semakan Keputusan</h2>
+            <form class="search-form" id="searchForm">
+                <div class="input-group">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" id="matricInput" placeholder="Masukkan No. Matrik (Cth: C9MS2516118064)" required>
+                </div>
+                <button type="submit" class="btn-search">
+                    <i class="fa-solid fa-magnifying-glass"></i> Cari Markah
+                </button>
+            </form>
+        </div>
+
+        <!-- Mesej Ralat -->
+        <div class="error-message" id="errorMessage">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span id="errorText">No. Matrik tidak dijumpai. Sila pastikan format dipasang dengan betul.</span>
+        </div>
+
+        <!-- Keputusan Paparan Pelajar -->
+        <div class="result-container" id="resultContainer">
+            
+            <!-- Kad Maklumat Pelajar -->
+            <div class="profile-card">
+                <div class="profile-item">
+                    <label>Nama Pelajar</label>
+                    <span id="resName">-</span>
+                </div>
+                <div class="profile-item">
+                    <label>No. Matrik</label>
+                    <span id="resMatric">-</span>
+                </div>
+                <div class="profile-item">
+                    <label>Pensyarah</label>
+                    <span id="resLecturer">-</span>
+                </div>
+            </div>
+
+            <!-- Kad Statistik Ringkasan -->
+            <div class="stats-grid">
+                <div class="stat-card pb">
+                    <h3>Jumlah PB (40%)</h3>
+                    <div class="value" id="resPB">0%</div>
+                </div>
+                <div class="stat-card total">
+                    <h3>Jumlah Keseluruhan Total (60%)</h3>
+                    <div class="value" id="resTotal">0%</div>
+                </div>
+            </div>
+
+            <!-- Jadual Perincian Markah -->
+            <div class="table-card">
+                <div class="table-header">
+                    <i class="fa-solid fa-list-check"></i> Perincian Markah Penilaian
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Komponen Penilaian</th>
+                                <th>Markah Mentah</th>
+                                <th>Peratusan (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Individual Assignment</td>
+                                <td id="resIA">- / 45M</td>
+                                <td><span class="badge-percent" id="resIAPercent">-</span></td>
+                            </tr>
+                            <tr>
+                                <td>Group Assignment</td>
+                                <td id="resGA">- / 45M</td>
+                                <td><span class="badge-percent" id="resGAPercent">-</span></td>
+                            </tr>
+                            <tr>
+                                <td>Numeracy Skill</td>
+                                <td>-</td>
+                                <td><span class="badge-percent" id="resNumeracy">-</span></td>
+                            </tr>
+                            <tr>
+                                <td>Digital Skill</td>
+                                <td>-</td>
+                                <td><span class="badge-percent" id="resDigital">-</span></td>
+                            </tr>
+                            <tr>
+                                <td>Ujian Pentaksiran Sumatif (UPS 1)</td>
+                                <td id="resUPS1">- / 19M</td>
+                                <td rowspan="3" style="vertical-align: middle; background-color: #fbfbfb;">
+                                    <strong>Sumative Assessment (20%):</strong><br>
+                                    <span class="badge-percent" id="resSumative" style="font-size: 0.95rem; margin-top: 4px; display: inline-block;">-</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Ujian Pentaksiran Sumatif (UPS 2)</td>
+                                <td id="resUPS2">- / 17M</td>
+                            </tr>
+                            <tr>
+                                <td>Ujian Pentaksiran Sumatif (UPS 3)</td>
+                                <td id="resUPS3">- / 24M</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pautan Laporan Google Drive -->
+            <h3 style="margin-bottom: 1rem; color: var(--primary-blue); font-size: 1.1rem;">
+                <i class="fa-solid fa-folder-open"></i> Laporan Tugasan (Google Drive)
+            </h3>
+            <div class="reports-grid">
+                <a href="#" id="linkIA" target="_blank" class="report-link-card">
+                    <div class="report-info">
+                        <div class="report-icon"><i class="fa-solid fa-file-lines"></i></div>
+                        <div class="report-details">
+                            <h4>Individual Assignment Report</h4>
+                            <p>Klik untuk muat turun / buka dokumen</p>
+                        </div>
+                    </div>
+                    <div class="report-action"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+                </a>
+
+                <a href="#" id="linkGA" target="_blank" class="report-link-card">
+                    <div class="report-info">
+                        <div class="report-icon"><i class="fa-solid fa-users-rectangle"></i></div>
+                        <div class="report-details">
+                            <h4>Group Assignment Report</h4>
+                            <p>Klik untuk muat turun / buka dokumen</p>
+                        </div>
+                    </div>
+                    <div class="report-action"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+                </a>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        &copy; 2026 Sistem Semakan Markah Penilaian Berterusan. Hak Cipta Terpelihara.
+    </footer>
+
+    <!-- JavaScript Logik & Pangkalan Data -->
+    <script>
+        // Data Pelajar
+        const studentDatabase = [
+            {
+                lecturer: "ABDUL RAZAK BIN AZIT",
+                name: "DANIA AFRINA BINTI MUHAMMAD KHAIRI",
+                matric: "C9MS2516118064",
+                ia: 44,
+                iaPercent: 14.7,
+                numeracyPercent: 5.0,
+                ga: 45,
+                gaPercent: 15.0,
+                digitalPercent: 5.0,
+                ups1: 19,
+                ups2: 17,
+                ups3: 24,
+                sumativePercent: 20.0,
+                pbPercent: 39.7,
+                totalPercent: 59.7,
+                reportIA: "https://drive.google.com/open?id=1LlooEEFUrB9X9Kvk3GyzKkqZ-4RZzuoE",
+                reportGA: "https://drive.google.com/open?id=1ENwYlVhDv3K9K_waaAQs7tzt9Yr6qFZB"
+            },
+            {
+                lecturer: "ABDUL RAZAK BIN AZIT",
+                name: "NUR ALIA MAISARA BINTI MAPIZ",
+                matric: "C9MS2516118300",
+                ia: 44,
+                iaPercent: 14.7,
+                numeracyPercent: 5.0,
+                ga: 45,
+                gaPercent: 15.0,
+                digitalPercent: 5.0,
+                ups1: 18,
+                ups2: 17,
+                ups3: 24,
+                sumativePercent: 19.7,
+                pbPercent: 39.7,
+                totalPercent: 59.4,
+                reportIA: "https://drive.google.com/open?id=1cpKbVd8bsMYvkrmkuWY_71iG26ATWe_q",
+                reportGA: "https://drive.google.com/open?id=1x9LhCUo8aYQG4oFzk_OXV1crU3KlFOMl"
+            },
+            {
+                lecturer: "ABDUL RAZAK BIN AZIT",
+                name: "ALIYAH AMANI BINTI MOHD KHAIR",
+                matric: "C9MS2516118537",
+                ia: 45,
+                iaPercent: 15.0,
+                numeracyPercent: 5.0,
+                ga: 45,
+                gaPercent: 15.0,
+                digitalPercent: 5.0,
+                ups1: 19,
+                ups2: 17,
+                ups3: 24,
+                sumativePercent: 20.0,
+                pbPercent: 40.0,
+                totalPercent: 60.0,
+                reportIA: "https://drive.google.com/open?id=1JbgtuA_d4yNVsf0z2ll7XiRFsW2T1no8",
+                reportGA: "https://drive.google.com/open?id=1Lhjrg7ZIZBhnvpdExY1NRVaVFIOF7owC"
+            },
+            {
+                lecturer: "ABDUL RAZAK BIN AZIT",
+                name: "NURDAYANA DANI BINTI IZULKIFLI",
+                matric: "C9MS2516118588",
+                ia: 45,
+                iaPercent: 15.0,
+                numeracyPercent: 5.0,
+                ga: 45,
+                gaPercent: 15.0,
+                digitalPercent: 5.0,
+                ups1: 17,
+                ups2: 17,
+                ups3: 23,
+                sumativePercent: 19.0,
+                pbPercent: 40.0,
+                totalPercent: 59.0,
+                reportIA: "https://drive.google.com/open?id=1VeGA2HfmGZXBZrADT14bQdZDvAvnm_7e",
+                reportGA: "https://drive.google.com/open?id=1a16UGGIq3TDm3XE4ygGVW1K1E_jcFFzT"
+            }
+        ];
+
+        // Elemen DOM
+        const searchForm = document.getElementById('searchForm');
+        const matricInput = document.getElementById('matricInput');
+        const errorMessage = document.getElementById('errorMessage');
+        const resultContainer = document.getElementById('resultContainer');
+
+        // Event Listener carian
+        searchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Bersihkan input
+            const inputVal = matricInput.value.trim().toUpperCase();
+
+            // Cari pelajar dalam pangkalan data
+            const student = studentDatabase.find(s => s.matric.toUpperCase() === inputVal);
+
+            if (student) {
+                // Sembunyikan mesej ralat jika ada
+                errorMessage.style.display = 'none';
+
+                // Masukkan data pelajar ke paparan DOM
+                document.getElementById('resName').textContent = student.name;
+                document.getElementById('resMatric').textContent = student.matric;
+                document.getElementById('resLecturer').textContent = student.lecturer;
+
+                document.getElementById('resPB').textContent = student.pbPercent + '%';
+                document.getElementById('resTotal').textContent = student.totalPercent + '%';
+
+                document.getElementById('resIA').textContent = student.ia + ' / 45M';
+                document.getElementById('resIAPercent').textContent = student.iaPercent + '%';
+                document.getElementById('resGA').textContent = student.ga + ' / 45M';
+                document.getElementById('resGAPercent').textContent = student.gaPercent + '%';
+                document.getElementById('resNumeracy').textContent = student.numeracyPercent + '%';
+                document.getElementById('resDigital').textContent = student.digitalPercent + '%';
+
+                document.getElementById('resUPS1').textContent = student.ups1 + ' / 19M';
+                document.getElementById('resUPS2').textContent = student.ups2 + ' / 17M';
+                document.getElementById('resUPS3').textContent = student.ups3 + ' / 24M';
+                document.getElementById('resSumative').textContent = student.sumativePercent + '%';
+
+                // Pautan Drive
+                document.getElementById('linkIA').href = student.reportIA;
+                document.getElementById('linkGA').href = student.reportGA;
+
+                // Paparkan bekas keputusan
+                resultContainer.style.display = 'block';
+            } else {
+                // Sembunyikan keputusan & paparkan mesej ralat
+                resultContainer.style.display = 'none';
+                errorMessage.style.display = 'flex';
+            }
+        });
+    </script>
+</body>
+</html>
