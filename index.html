@@ -210,7 +210,7 @@
             border: 1px solid var(--border-color);
             margin-bottom: 1.5rem;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1.5rem;
             background: linear-gradient(to right, var(--pure-white), #f0f7ff);
             border-left: 6px solid var(--primary-blue);
@@ -296,13 +296,19 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            text-align: left;
+            text-align: center;
         }
 
         th, td {
             padding: 1rem 1.25rem;
             border-bottom: 1px solid var(--border-color);
             font-size: 0.92rem;
+        }
+
+        /* Mengatur posisi Komponen Penilaian dan isinya ke sebelah kiri */
+        table th:first-child,
+        table td:first-child {
+            text-align: left;
         }
 
         th {
@@ -439,7 +445,7 @@
             <form class="search-form" id="searchForm">
                 <div class="input-group">
                     <i class="fa-solid fa-search"></i>
-                    <input type="text" id="matricInput" placeholder="Masukkan No. Matrik (Cth: C9MS2516118064)" required>
+                    <input type="text" id="matricInput" placeholder="Masukkan No. Matrik (Cth: MS2516118064)" required>
                 </div>
                 <button type="submit" class="btn-search">
                     <i class="fa-solid fa-magnifying-glass"></i> Cari Markah
@@ -465,6 +471,10 @@
                 <div class="profile-item">
                     <label>No. Matrik</label>
                     <span id="resMatric">-</span>
+                </div>
+                <div class="profile-item">
+                    <label>Praktikum</label>
+                    <span id="resPract">-</span>
                 </div>
                 <div class="profile-item">
                     <label>Pensyarah</label>
@@ -494,62 +504,57 @@
                         <thead>
                             <tr>
                                 <th>Komponen Penilaian</th>
-                                <th>Markah Mentah</th>
+                                <th>Markah Diperolehi</th>
                                 <th>Peratusan (%)</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Individual Assignment</td>
-                                <td id="resIA">- / 45M</td>
+                                <td>Tugasan Individu</td>
+                                <td id="resIA">- / 45</td>
                                 <td><span class="badge-percent" id="resIAPercent">-</span></td>
                             </tr>
                             <tr>
-                                <td>Group Assignment</td>
-                                <td id="resGA">- / 45M</td>
-                                <td><span class="badge-percent" id="resGAPercent">-</span></td>
-                            </tr>
-                            <tr>
-                                <td>Numeracy Skill</td>
-                                <td>-</td>
+                                <td>Kemahiran Numerasi</td>
+                                <td id="resNumeracyMark">- / 10</td>
                                 <td><span class="badge-percent" id="resNumeracy">-</span></td>
                             </tr>
                             <tr>
-                                <td>Digital Skill</td>
-                                <td>-</td>
-                                <td><span class="badge-percent" id="resDigital">-</span></td>
+                                <td>Tugasan Kumpulan</td>
+                                <td id="resGA">- / 50</td>
+                                <td><span class="badge-percent" id="resGAPercent">-</span></td>
                             </tr>
                             <tr>
                                 <td>Ujian Pentaksiran Sumatif (UPS 1)</td>
-                                <td id="resUPS1">- / 19M</td>
+                                <td id="resUPS1">- / 21</td>
                                 <td rowspan="3" style="vertical-align: middle; background-color: #fbfbfb;">
-                                    <strong>Sumative Assessment (20%):</strong><br>
+                                    <strong>Penilaian Sumatif (20%):</strong><br>
                                     <span class="badge-percent" id="resSumative" style="font-size: 0.95rem; margin-top: 4px; display: inline-block;">-</span>
                                 </td>
                             </tr>
                             <tr>
                                 <td>Ujian Pentaksiran Sumatif (UPS 2)</td>
-                                <td id="resUPS2">- / 17M</td>
+                                <td id="resUPS2">- / 21</td>
                             </tr>
                             <tr>
                                 <td>Ujian Pentaksiran Sumatif (UPS 3)</td>
-                                <td id="resUPS3">- / 24M</td>
+                                <td id="resUPS3">- / 18</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Pautan Laporan Google Drive -->
+            <!-- Pautan Laporan (Google Drive) -->
             <h3 style="margin-bottom: 1rem; color: var(--primary-blue); font-size: 1.1rem;">
-                <i class="fa-solid fa-folder-open"></i> Laporan Tugasan (Google Drive)
+                <i class="fa-solid fa-folder-open"></i> Laporan Tugasan
             </h3>
             <div class="reports-grid">
                 <a href="#" id="linkIA" target="_blank" class="report-link-card">
                     <div class="report-info">
                         <div class="report-icon"><i class="fa-solid fa-file-lines"></i></div>
                         <div class="report-details">
-                            <h4>Individual Assignment Report</h4>
+                            <h4>Laporan Tugasan Individu</h4>
                             <p>Klik untuk muat turun / buka dokumen</p>
                         </div>
                     </div>
@@ -560,7 +565,7 @@
                     <div class="report-info">
                         <div class="report-icon"><i class="fa-solid fa-users-rectangle"></i></div>
                         <div class="report-details">
-                            <h4>Group Assignment Report</h4>
+                            <h4>Laporan Tugasan Kumpulan</h4>
                             <p>Klik untuk muat turun / buka dokumen</p>
                         </div>
                     </div>
@@ -577,85 +582,109 @@
         &copy; 2026 Sistem Semakan Markah Penilaian Berterusan. Hak Cipta Terpelihara.
     </footer>
 
-    <!-- JavaScript Logik & Pangkalan Data -->
+    <!-- JavaScript Logik & Pangkalan Data Baharu -->
     <script>
-        // Data Pelajar
+        // Pangkalan Data Pelajar Terkini
         const studentDatabase = [
             {
                 lecturer: "ABDUL RAZAK BIN AZIT",
                 name: "DANIA AFRINA BINTI MUHAMMAD KHAIRI",
-                matric: "C9MS2516118064",
-                ia: 44,
-                iaPercent: 14.7,
+                pract: "C9",
+                matric: "MS2516118064",
+                ia: 43,
+                iaPercent: 14.4,
+                numeracyMark: 10,
                 numeracyPercent: 5.0,
-                ga: 45,
-                gaPercent: 15.0,
-                digitalPercent: 5.0,
+                ga: 47,
+                gaPercent: 18.8,
                 ups1: 19,
-                ups2: 17,
-                ups3: 24,
-                sumativePercent: 20.0,
-                pbPercent: 39.7,
-                totalPercent: 59.7,
-                reportIA: "https://drive.google.com/open?id=1LlooEEFUrB9X9Kvk3GyzKkqZ-4RZzuoE",
-                reportGA: "https://drive.google.com/open?id=1ENwYlVhDv3K9K_waaAQs7tzt9Yr6qFZB"
+                ups2: 21,
+                ups3: 18,
+                sumativePercent: 19.4,
+                pbPercent: 38.2,
+                totalPercent: 57.6,
+                reportIA: "https://drive.google.com/open?id=1AimHyKqH26zjEDsaKYY8kCn45KYmGo7R",
+                reportGA: "https://drive.google.com/file/d/10xwlTk8UVbpg3SXlN6W6kQykVqgR4Dbz/view?usp=sharing"
             },
             {
                 lecturer: "ABDUL RAZAK BIN AZIT",
                 name: "NUR ALIA MAISARA BINTI MAPIZ",
-                matric: "C9MS2516118300",
-                ia: 44,
-                iaPercent: 14.7,
+                pract: "C9",
+                matric: "MS2516118300",
+                ia: 45,
+                iaPercent: 15.0,
+                numeracyMark: 10,
                 numeracyPercent: 5.0,
-                ga: 45,
-                gaPercent: 15.0,
-                digitalPercent: 5.0,
-                ups1: 18,
-                ups2: 17,
-                ups3: 24,
-                sumativePercent: 19.7,
-                pbPercent: 39.7,
-                totalPercent: 59.4,
-                reportIA: "https://drive.google.com/open?id=1cpKbVd8bsMYvkrmkuWY_71iG26ATWe_q",
-                reportGA: "https://drive.google.com/open?id=1x9LhCUo8aYQG4oFzk_OXV1crU3KlFOMl"
+                ga: 50,
+                gaPercent: 20.0,
+                ups1: 20,
+                ups2: 20,
+                ups3: 17,
+                sumativePercent: 19.0,
+                pbPercent: 40.0,
+                totalPercent: 59.0,
+                reportIA: "https://drive.google.com/open?id=1g173WuV5799zwO3CDDr2ywN1FKdzHmsy",
+                reportGA: "https://drive.google.com/open?id=10fjfL_eeRAwzJ7xckFqGGJGKufmXrMZh"
             },
             {
                 lecturer: "ABDUL RAZAK BIN AZIT",
                 name: "ALIYAH AMANI BINTI MOHD KHAIR",
-                matric: "C9MS2516118537",
-                ia: 45,
-                iaPercent: 15.0,
-                numeracyPercent: 5.0,
-                ga: 45,
-                gaPercent: 15.0,
-                digitalPercent: 5.0,
-                ups1: 19,
-                ups2: 17,
-                ups3: 24,
-                sumativePercent: 20.0,
-                pbPercent: 40.0,
-                totalPercent: 60.0,
-                reportIA: "https://drive.google.com/open?id=1JbgtuA_d4yNVsf0z2ll7XiRFsW2T1no8",
-                reportGA: "https://drive.google.com/open?id=1Lhjrg7ZIZBhnvpdExY1NRVaVFIOF7owC"
+                pract: "C9",
+                matric: "MS2516118537",
+                ia: 43,
+                iaPercent: 14.4,
+                numeracyMark: 9,
+                numeracyPercent: 4.5,
+                ga: 50,
+                gaPercent: 20.0,
+                ups1: 16,
+                ups2: 21,
+                ups3: 18,
+                sumativePercent: 18.4,
+                pbPercent: 38.9,
+                totalPercent: 57.3,
+                reportIA: "https://drive.google.com/open?id=1ZPKvP85varZWEw5JmGoFoAS7K7qZsmXZ",
+                reportGA: "https://drive.google.com/file/d/1qKZ8LZGbHDazWaCY4yRA0bVe87U0Dss3/view?usp=sharing"
             },
             {
                 lecturer: "ABDUL RAZAK BIN AZIT",
                 name: "NURDAYANA DANI BINTI IZULKIFLI",
-                matric: "C9MS2516118588",
-                ia: 45,
-                iaPercent: 15.0,
-                numeracyPercent: 5.0,
-                ga: 45,
-                gaPercent: 15.0,
-                digitalPercent: 5.0,
-                ups1: 17,
-                ups2: 17,
-                ups3: 23,
+                pract: "C9",
+                matric: "MS2516118588",
+                ia: 44,
+                iaPercent: 14.7,
+                numeracyMark: 9,
+                numeracyPercent: 4.5,
+                ga: 50,
+                gaPercent: 20.0,
+                ups1: 20,
+                ups2: 20,
+                ups3: 17,
                 sumativePercent: 19.0,
-                pbPercent: 40.0,
-                totalPercent: 59.0,
-                reportIA: "https://drive.google.com/open?id=1VeGA2HfmGZXBZrADT14bQdZDvAvnm_7e",
-                reportGA: "https://drive.google.com/open?id=1a16UGGIq3TDm3XE4ygGVW1K1E_jcFFzT"
+                pbPercent: 39.2,
+                totalPercent: 58.2,
+                reportIA: "https://drive.google.com/open?id=1yglbMxrkSyNpOl7o1u5fy8Z2qXqR8mPY",
+                reportGA: "https://drive.google.com/open?id=1izh7hDLA8QLHfvdukpdHoxKDFgCkfo3y"
+            },
+            {
+                lecturer: "ABDUL RAZAK BIN AZIT",
+                name: "NUR AMANDA YASMIN BINTI MD MAZLAN",
+                pract: "C9",
+                matric: "MS2516118837",
+                ia: 43,
+                iaPercent: 14.4,
+                numeracyMark: 9,
+                numeracyPercent: 4.5,
+                ga: 47,
+                gaPercent: 18.8,
+                ups1: 19,
+                ups2: 21,
+                ups3: 18,
+                sumativePercent: 19.4,
+                pbPercent: 37.7,
+                totalPercent: 57.1,
+                reportIA: "https://drive.google.com/open?id=1ZpnVmgPlS2FtKrBmjnZTyTfQJLJDPvrX",
+                reportGA: "https://drive.google.com/file/d/1UgU50vZlRZflgK8sNTSquH1AxOmwlAbF/view?usp=sharing"
             }
         ];
 
@@ -669,11 +698,20 @@
         searchForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Bersihkan input
-            const inputVal = matricInput.value.trim().toUpperCase();
+            // Bersihkan input dan buang awalan 'C9' jika pengguna tertulis 'C9'
+            let inputVal = matricInput.value.trim().toUpperCase();
+            if (inputVal.startsWith('C9')) {
+                inputVal = inputVal.substring(2);
+            }
 
             // Cari pelajar dalam pangkalan data
-            const student = studentDatabase.find(s => s.matric.toUpperCase() === inputVal);
+            const student = studentDatabase.find(s => {
+                let dbMatric = s.matric.toUpperCase();
+                if (dbMatric.startsWith('C9')) {
+                    dbMatric = dbMatric.substring(2);
+                }
+                return dbMatric === inputVal;
+            });
 
             if (student) {
                 // Sembunyikan mesej ralat jika ada
@@ -682,21 +720,24 @@
                 // Masukkan data pelajar ke paparan DOM
                 document.getElementById('resName').textContent = student.name;
                 document.getElementById('resMatric').textContent = student.matric;
+                document.getElementById('resPract').textContent = student.pract;
                 document.getElementById('resLecturer').textContent = student.lecturer;
 
                 document.getElementById('resPB').textContent = student.pbPercent + '%';
                 document.getElementById('resTotal').textContent = student.totalPercent + '%';
 
-                document.getElementById('resIA').textContent = student.ia + ' / 45M';
+                document.getElementById('resIA').textContent = student.ia + ' / 45';
                 document.getElementById('resIAPercent').textContent = student.iaPercent + '%';
-                document.getElementById('resGA').textContent = student.ga + ' / 45M';
-                document.getElementById('resGAPercent').textContent = student.gaPercent + '%';
+                
+                document.getElementById('resNumeracyMark').textContent = student.numeracyMark + ' / 10';
                 document.getElementById('resNumeracy').textContent = student.numeracyPercent + '%';
-                document.getElementById('resDigital').textContent = student.digitalPercent + '%';
 
-                document.getElementById('resUPS1').textContent = student.ups1 + ' / 19M';
-                document.getElementById('resUPS2').textContent = student.ups2 + ' / 17M';
-                document.getElementById('resUPS3').textContent = student.ups3 + ' / 24M';
+                document.getElementById('resGA').textContent = student.ga + ' / 50';
+                document.getElementById('resGAPercent').textContent = student.gaPercent + '%';
+
+                document.getElementById('resUPS1').textContent = student.ups1 + ' / 21';
+                document.getElementById('resUPS2').textContent = student.ups2 + ' / 21';
+                document.getElementById('resUPS3').textContent = student.ups3 + ' / 18';
                 document.getElementById('resSumative').textContent = student.sumativePercent + '%';
 
                 // Pautan Drive
